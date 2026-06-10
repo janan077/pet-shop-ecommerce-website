@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Shop Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e75c34;
+            margin: 0;
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .search-bar {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        .products {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .product-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 250px;
+            text-align: center;
+            color: #333;
+        }
+
+        .product img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .product img:hover {
+            transform: scale(1.1);
+        }
+
+        .add-to-cart, .buy-now {
+            background-color: #ff7043;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .add-to-cart:hover, .buy-now:hover {
+            background-color: #e64a19;
+        }
+
+        .cart-info {
+            position: relative;
+            background: #ff7043;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .cart-modal-content {
+            background: linear-gradient(135deg, #ff7043, #e75c34);
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .cart-modal-content.show {
+            transform: scale(1);
+        }
+
+        .cart-modal input, .cart-modal select, .cart-modal textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            transition: background 0.3s;
+        }
+
+        .cart-modal input:focus, .cart-modal select:focus, .cart-modal textarea:focus {
+            background: #fff;
+        }
+
+        .cart-modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .cart-modal-content button:hover {
+            background-color: #d84315;
+            transform: scale(1.05);
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search Products..." oninput="searchProducts()">
+        <div class="cart-info" onclick="showCart()">Cart</div>
+    </div>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h1>Featured Products</h1>
+            <div class="product-list" id="productList">
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/dog food.jpeg" alt="Dog Food" tabindex="0" onkeydown="handleKeyDown(event, 'Dog Food', 750)">
+                    <h3>Dog Food</h3>
+                    <p>₹750.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Dog Food', 750)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/dog bone.jpeg" alt="Dog Bone" tabindex="0" onkeydown="handleKeyDown(event, 'Dog Bone', 400)">
+                    <h3>Dog Bone</h3>
+                    <p>₹400.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Dog Bone', 400)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/dog medicine.jpg" alt="Dog Medicine" tabindex="0" onkeydown="handleKeyDown(event, 'Dog Medicine', 500)">
+                    <h3>Dog Medicine</h3>
+                    <p>₹500.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Dog Medicine', 500)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/cat food.webp" alt="Cat Food" tabindex="0" onkeydown="handleKeyDown(event, 'Cat Food', 1500)">
+                    <h3>Cat Food</h3>
+                    <p>₹1500.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Cat Food', 1500)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/cat medicine.webp" alt="Cat Medicine" tabindex="0" onkeydown="handleKeyDown(event, 'Cat Medicine', 560)">
+                    <h3>Cat Medicine</h3>
+                    <p>₹560.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Cat Medicine', 560)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/cat toy.webp" alt="Cat Toy" tabindex="0" onkeydown="handleKeyDown(event, 'Cat Toy', 2500)">
+                    <h3>Cat Toy</h3>
+                    <p>₹2500.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Cat Toy', 2500)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/birdfood.jpg" alt="Bird Food" tabindex="0" onkeydown="handleKeyDown(event, 'Bird Food', 250)">
+                    <h3>Bird Food</h3>
+                    <p>₹250.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Bird Food', 250)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/bird cage.jpeg" alt="Bird Cage" tabindex="0" onkeydown="handleKeyDown(event, 'Bird Cage', 2700)">
+                    <h3>Bird Cage</h3>
+                    <p>₹2700.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Bird Cage', 2700)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/web designing/bird food holder.png" alt="Food Holder" tabindex="0" onkeydown="handleKeyDown(event, 'Food Holder', 720)">
+                    <h3>Food Holder</h3>
+                    <p>₹720.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Food Holder', 720)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/PET SHOP MANAGEMENT/fish food.jpg" alt="Fish Food" tabindex="0" onkeydown="handleKeyDown(event, 'Fish Food', 350)">
+                    <h3>Fish Food</h3>
+                    <p>₹350.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Fish Food', 350)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/web designing/aquarium.jpg" alt="Fish Aquarium" tabindex="0" onkeydown="handleKeyDown(event, 'Fish Aquarium', 1350)">
+                    <h3>Fish Aquarium</h3>
+                    <p>₹1350.00</p>
+                    <button class="add-to-cart" onclick="addToCart('Fish Aquarium', 1350)">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="D:/web designing/fish stone.jpg" alt="Stone" tabindex="0" onkeydown="handleKeyDown(event, 'Stone', 150)">
+                    <h3>Stone</h3>
+                    <p>₹150.00/K.G</p>
+                    <button class="add-to-cart" onclick="addToCart('Stone', 150)">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <h2>Your Cart</h2>
+            <div id="cartItems"></div>
+            <div class="total-price" id="totalPrice">Total: ₹0.00</div>
+            <input type="text" id="couponCode" placeholder="Enter Coupon Code" style="display: none;">
+            <div class="center">
+                <button id="applyCouponButton" onclick="applyCoupon()" style="display: none;">Apply Coupon</button>
+            </div>
+            <div id="discountMessage" style="color: yellow;"></div>
+            <button onclick="buyNowFromCart()">Buy Now</button>
+            <button onclick="closeCartModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Buy Now Modal -->
+    <div class="cart-modal" id="buyNowModal">
+        <div class="cart-modal-content">
+            <h1>Purchase Details</h1>
+            <input type="text" id="userName" placeholder="Your Name" required oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+            <textarea id="userAddress" placeholder="Your Address" required></textarea>
+            <input type="tel" id="userPhone" placeholder="Phone Number" required pattern="[0-9]*" inputmode="numeric">
+            <select id="paymentMode" required onchange="togglePaymentFields()">
+                <option value="" disabled selected>Select Payment Mode</option>
+                <option value="creditCard">Credit Card</option>
+                <option value="debitCard">Debit Card</option>
+                <option value="upi">UPI</option>
+                <option value="cashOnDelivery">Cash on Delivery</option>
+            </select>
+            <div id="cardDetails" style="display: none;">
+                <select id="cardType" required>
+                    <option value="" disabled selected>Select Card Type</option>
+                    <option value="visa">Visa</option>
+                    <option value="masterCard">MasterCard</option>
+                    <option value="rupay">RuPay</option>
+                    <option value="americanExpress">American Express</option>
+                </select>
+                <input type="text" id="cardNumber" placeholder="Card Number" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" id="cardExpiry" placeholder="Expiry Date (MM/YY)" required oninput="this.value = this.value.replace(/[^0-9/]/g, '')">
+                <input type="text" id="cardCVC" placeholder="CVC" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+            <div id="upiDetails" style="display: none;">
+                <input type="text" id="upiId" placeholder="UPI ID" required>
+            </div>
+            <button onclick="confirmPurchase()">Confirm Purchase</button>
+            <button onclick="closeBuyNowModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let discount = 0; // Variable to hold discount amount
+
+        function addToCart(product, price) {
+            const itemIndex = cart.findIndex(item => item.product === product);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += 1;
+            } else {
+                cart.push({ product, price, quantity: 1 });
+            }
+            alert(`${product} has been added to your cart.`);
+        }
+
+        function showCart() {
+            const cartItemsContainer = document.getElementById("cartItems");
+            cartItemsContainer.innerHTML = ""; // Clear previous items
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = "<p>Your cart is empty!</p>"; // Display empty cart message
+                document.getElementById("totalPrice").innerText = `Total: ₹0.00`; // Reset total price
+                document.getElementById("couponCode").style.display = "none"; // Hide coupon input
+                document.getElementById("applyCouponButton").style.display = "none"; // Hide apply coupon button
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <span>${item.product} - ₹${item.price} x ${item.quantity} = ₹${itemTotal}</span>
+                            <button onclick="changeQuantity('${item.product}', -1)">-</button>
+                            <button onclick="changeQuantity('${item.product}', 1)">+</button>
+                        </div>
+                    `;
+                });
+
+                total -= discount; // Subtract discount from total
+                document.getElementById("totalPrice").innerText = `Total: ₹${total}`;
+                document.getElementById("couponCode").style.display = "block"; // Show coupon input
+                document.getElementById("applyCouponButton").style.display = "block"; // Show apply coupon button
+            }
+
+            document.getElementById("cartModal").style.display = "flex";
+            document.body.style.overflow = "hidden"; // Prevent body scroll
+        }
+
+        function changeQuantity(product, change) {
+            const itemIndex = cart.findIndex(item => item.product === product);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+
+            // Check if the cart is empty after the change
+            if (cart.length === 0) {
+                discount = 0; // Reset discount
+                document.getElementById("totalPrice").innerText = `Total: ₹0.00`; // Reset total price
+            }
+
+            showCart();
+        }
+
+        function closeCartModal() {
+            document.getElementById("cartModal").style.display = "none";
+            document.body.style.overflow = "auto"; // Allow body scroll again
+        }
+
+        function buyNowFromCart() {
+            if (cart.length === 0) {
+                alert("Your cart is empty! Please add products to your cart before proceeding to buy.");
+                return; // Exit the function if the cart is empty
+            }
+            
+            const modal = document.getElementById("buyNowModal");
+            document.getElementById("cartModal").style.display = "none";
+            modal.style.display = "flex";
+        }
+
+        function applyCoupon() {
+            const discountMessage = document.getElementById("discountMessage");
+
+            // Check if the cart is empty
+            if (cart.length === 0) {
+                discountMessage.innerText = "Please add products to your cart before applying a coupon.";
+                return; // Exit the function if the cart is empty
+            }
+
+            const couponCode = document.getElementById("couponCode").value.trim().toUpperCase(); // Convert to uppercase
+
+            // Example coupon codes and their discounts
+            const coupons = {
+                "SAVE10": 10, // 10% discount
+                "SAVE20": 20, // 20% discount
+                "SAVE30": 30  // 30% discount
+            };
+
+            if (coupons[couponCode]) {
+                discount = (getTotalPrice() * coupons[couponCode]) / 100; // Calculate discount
+                discountMessage.innerText = `Coupon applied! You saved ₹${discount.toFixed(2)}`;
+            } else {
+                discountMessage.innerText = "Invalid coupon code.";
+                discount = 0; // Reset discount if invalid
+            }
+            showCart(); // Update cart display
+        }
+
+        function getTotalPrice() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function confirmPurchase() {
+            const name = document.getElementById("userName").value.trim();
+            const address = document.getElementById("userAddress").value.trim();
+            const phone = document.getElementById("userPhone").value.trim();
+            const paymentMode = document.getElementById("paymentMode").value;
+
+            // Validate phone number
+            if (!/^\d{10}$/.test(phone)) {
+                alert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            // Validate payment details based on selected payment mode
+            if (paymentMode === "creditCard" || paymentMode === "debitCard") {
+                const cardType = document.getElementById("cardType").value;
+                const cardNumber = document.getElementById("cardNumber").value.trim();
+                const cardExpiry = document.getElementById("cardExpiry").value.trim();
+                const cardCVC = document.getElementById("cardCVC").value.trim();
+
+                if (!cardType || !cardNumber || !cardExpiry || !cardCVC) {
+                    alert("Please fill in all card details.");
+                    return;
+                }
+            } else if (paymentMode === "upi") {
+                const upiId = document.getElementById("upiId").value.trim();
+                if (!upiId) {
+                    alert("Please enter your UPI ID.");
+                    return;
+                }
+
+                // Validate UPI ID for "@" symbol and bank name
+                const upiRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z]{2,}$/; // Regex for UPI ID
+                if (!upiRegex.test(upiId)) {
+                    alert("Invalid UPI ID. Please ensure it contains the '@' symbol followed by a valid bank name (e.g., @oksbi, @okicici).");
+                    return;
+                }
+            }
+
+            if (name && address && phone && paymentMode) {
+                alert(`Purchase Confirmed!\n\nDetails:\nName: ${name}\nAddress: ${address}\nPhone: ${phone}\nPayment Mode: ${paymentMode}`);
+                cart = []; // Clear the cart after purchase
+                discount = 0; // Reset discount after purchase
+                closeBuyNowModal(); // Close the modal
+            } else {
+                alert("Please fill in all fields, including the payment mode, to complete the purchase.");
+            }
+        }
+
+        function closeBuyNowModal() {
+            document.getElementById("buyNowModal").style.display = "none";
+        }
+
+        function togglePaymentFields() {
+            const paymentMode = document.getElementById("paymentMode").value;
+            document.getElementById("cardDetails").style.display = (paymentMode === "creditCard" || paymentMode === "debitCard") ? "block" : "none";
+            document.getElementById("upiDetails").style.display = (paymentMode === "upi") ? "block" : "none";
+        }
+
+        // Restrict input to numbers only for phone input
+        document.getElementById("userPhone").addEventListener("input", function (e) {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Allow only numbers
+        });
+
+        // Restrict input to alphabets only for name input
+        document.getElementById("userName").addEventListener("input", function (e) {
+            this.value = this.value.replace(/[^a-zA-Z ]/g, ''); // Allow only alphabets and spaces
+        });
+
+        // Convert coupon code input to uppercase as the user types
+        document.getElementById("couponCode").addEventListener("input", function (e) {
+            this.value = this.value.toUpperCase(); // Convert to uppercase
+        });
+
+        // Search functionality
+        function searchProducts() {
+            const searchTerm = document.getElementById("searchBar").value.toLowerCase();
+            const products = document.querySelectorAll(".product");
+            products.forEach(product => {
+                const productName = product.querySelector("h3").innerText.toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    product.style.display = "block"; // Show product
+                } else {
+                    product.style.display = "none"; // Hide product
+                }
+            });
+        }
+
+        // Handle Enter key for adding to cart
+        function handleKeyDown(event, product, price) {
+            if (event.key === "Enter") {
+                addToCart(product, price);
+            }
+        }
+    </script>
+</body>
+</html>
